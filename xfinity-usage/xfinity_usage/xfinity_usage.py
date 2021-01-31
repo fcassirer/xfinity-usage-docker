@@ -84,8 +84,6 @@ class XfinityUsage(object):
 
     USAGE_URL = 'https://customer.xfinity.com/#/devices'
     JSON_URL = 'https://customer.xfinity.com/apis/services/internet/usage'
-#    USAGE_URL = 'https://rentonhomdom.duckdns.org/'
-#    JSON_URL = 'https://rentonhomdom.duckdns.org/apis/services/internet/usage'
 
     def __init__(self, username, password, debug=False,
                  cookie_file='cookies.json', browser_name='firefox-headless', attempts=2):
@@ -234,7 +232,6 @@ class XfinityUsage(object):
         if not logged_in:
             if count > self.attempts:
                 self.error_screenshot()
-# FIXME
                 self.browser.quit()
                 raise RuntimeError("Tried %d times to log in; all failed.", count)
                 raise SystemExit(2)
