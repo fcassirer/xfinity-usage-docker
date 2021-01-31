@@ -11,7 +11,10 @@ This includes a modified xfinity-usage python module. Refer to the following:
 https://github.com/jantman/xfinity-usage/issues/30
 https://github.com/billimek/comcastUsage-for-influxdb/issues/1
 
-xfinity-usage was modified to resolve the above state issues and control request attempt looping.
+xfinity-usage was modified:
+-to resolve the above state issues
+-control request attempt looping.
+-work under Python3
 
 Status:
 As of today (2021.01.31), this container is working accurately to scrap xfinity account data. I only perform the data request action 2 times per day, since I presume (based on other user's reports) that xFinity will block your username if you request too often. Use at your own discretion !!!!
