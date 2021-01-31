@@ -31,8 +31,24 @@ This code is adopted from the work done by [barrycarey](https://github.com/barry
 #### GENERAL
 |Key            |Description                                                                                                         |
 |:--------------|:-------------------------------------------------------------------------------------------------------------------|
-|Delay          |Delay between runs                                                                                                  |
-|Output         |Write console output while tool is running                                                                          |
+|Interval       |Interval is seconds between each scraping scheduled task                                                            |
+|Iterations     |Iterations is the count of scrap tasks performed before exit; set to zero for indefinite                            |
+|Attempts       |Attempts is the number of web requests errors before failure                                                        |
+|Verbose        |Verbose produces debug log and screenprints to '/data'                                                              |
+#### XFINITY
+|Key            |Description                                                                                                         |
+|:--------------|:-------------------------------------------------------------------------------------------------------------------|
+|Username       |Comcast username (don't include the @comcast.com)                                                                   |
+|Password       |Password for above user  
+#### LOG
+|Key            |Description                                                                                                         |
+|:--------------|:-------------------------------------------------------------------------------------------------------------------|
+|Enabled        |Set to True to activate 
+#### FILE
+|Key            |Description                                                                                                         |
+|:--------------|:-------------------------------------------------------------------------------------------------------------------|
+|Enabled        |Set to True to activate  
+|Filename       |JSON output is written to to '/data'. default = output.json                                                         |
 #### INFLUXDB
 |Key            |Description                                                                                                         |
 |:--------------|:-------------------------------------------------------------------------------------------------------------------|
@@ -41,11 +57,7 @@ This code is adopted from the work done by [barrycarey](https://github.com/barry
 |Database       |Database to write collected stats to                                                                                |
 |Username       |User that has access to the database                                                                                |
 |Password       |Password for above user                                                                                             |
-#### XFINITY
-|Key            |Description                                                                                                         |
-|:--------------|:-------------------------------------------------------------------------------------------------------------------|
-|Username       |Comcast username (don't include the @comcast.com)                                                                   |
-|Password       |Password for above user  
+
 
 
 ## InfluxDB metrics
