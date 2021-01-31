@@ -86,7 +86,7 @@ Currently running on Debian Linux x86, will likely continue further testing on R
 
 1. Install [Docker](https://www.docker.com/)
 
-2. Clone repo to <local folder>
+2. Clone repo to '<local folder>'
 
 3. Alter config.ini as desired
 Example:
@@ -96,7 +96,7 @@ Username = annoying_customer
 Password = supersecretpassword
 ```
 4. Build the container
-```bash
+```
 cd <local folder>
 docker build -t xfinity .
 ```
