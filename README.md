@@ -105,7 +105,7 @@ docker build -t xfinity .
 ```
 
 ## Usage
-5. Run the container, pointing to the directory with the config file, and an output folder (optional,recommended)
+5. Run the container, pointing to the config file, and an output folder (optional,recommended)
 ```bash
 docker run \
    --name="xfinity" \
