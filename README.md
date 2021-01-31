@@ -22,7 +22,10 @@ Sample output is located in the '/data' folder.
 
 This tool allows you to run periodic data usage checks and save the results to file and/or Influxdb
 
+ToDo:
 
+- Remove extraneous libraries from previous scrap attempts (phantom-js)
+- Move to small linux base (previous attempts on debian produced no network connects)
 
 
 This code is adopted from the work done by [barrycarey](https://github.com/barrycarey) in the [similar thing for capturing speedtest data](https://github.com/barrycarey/Speedtest-for-InfluxDB-and-Grafana) as well as [jantman's](https://github.com/jantman) [xfinity-usage python example](https://github.com/jantman/xfinity-usage)
