@@ -2,9 +2,10 @@
 ------------------------------
 
 This is a combination of two repos:
-
+```
 https://github.com/jantman/xfinity-usage
 https://github.com/billimek/comcastUsage-for-influxdb
+```
 
 This includes a modified xfinity-usage python module. Refer to the following:
 https://github.com/jantman/xfinity-usage/issues/30
