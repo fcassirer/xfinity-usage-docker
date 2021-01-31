@@ -56,6 +56,7 @@ This code is adopted from the work done by [barrycarey](https://github.com/barry
 #### INFLUXDB
 |Key            |Description                                                                                                         |
 |:--------------|:-------------------------------------------------------------------------------------------------------------------|
+|Enabled        |Set to True to activate 
 |Address        |Delay between updating metrics                                                                                      |
 |Port           |InfluxDB port to connect to.  8086 in most cases                                                                    |
 |Database       |Database to write collected stats to                                                                                |
