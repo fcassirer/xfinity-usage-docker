@@ -14,7 +14,7 @@ https://github.com/billimek/comcastUsage-for-influxdb/issues/1
 xfinity-usage was modified to resolve the above state issues and control request attempt looping.
 
 Status:
-As of today (2021.01.31), this container is working accurately to scrap xfinity account data. I only perform the data request action 2 times per day, since I presume based of other experiences that xFinity will block your username if you request too often. Use at your own discretion !!!!
+As of today (2021.01.31), this container is working accurately to scrap xfinity account data. I only perform the data request action 2 times per day, since I presume (based on other user's reports) that xFinity will block your username if you request too often. Use at your own discretion !!!!
 
 
 
