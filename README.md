@@ -1,9 +1,26 @@
-**Comcast Data Cap Usage Collector For InfluxDB and Grafana**
+**Xfinity (Comcast) Data Usage Scrapper in Docker**
 ------------------------------
+
+This is a combination of two repos:
+
+https://github.com/jantman/xfinity-usage
+https://github.com/billimek/comcastUsage-for-influxdb
+
+This includes a modified xfinity-usage python module since the current version has been corrected. Refer to the following:
+https://github.com/jantman/xfinity-usage/issues/30
+https://github.com/billimek/comcastUsage-for-influxdb/issues/1
+
+Status:
+As of today (2021.01.31), this container is working accurately to scrap xfinity account data. I only perform the data request action 2 times per day, since I presume based of other experiences that xFinity will block your username if you request too often. Use at your own discretion !!!!
+
+
 
 ![Screenshot](images/comcast_grafana_example.png)
 
-This tool allows you to run periodic comcast data usage checks and save the results to Influxdb
+This tool allows you to run periodic data usage checks and save the results to file and/or Influxdb
+
+
+
 
 This code is adopted from the work done by [barrycarey](https://github.com/barrycarey) in the [similar thing for capturing speedtest data](https://github.com/barrycarey/Speedtest-for-InfluxDB-and-Grafana) as well as [jantman's](https://github.com/jantman) [xfinity-usage python example](https://github.com/jantman/xfinity-usage)
 
@@ -22,7 +39,7 @@ This code is adopted from the work done by [barrycarey](https://github.com/barry
 |Database       |Database to write collected stats to                                                                                |
 |Username       |User that has access to the database                                                                                |
 |Password       |Password for above user                                                                                             |
-#### COMCAST
+#### XFINITY
 |Key            |Description                                                                                                         |
 |:--------------|:-------------------------------------------------------------------------------------------------------------------|
 |Username       |Comcast username (don't include the @comcast.com)                                                                   |
@@ -44,53 +61,32 @@ See this [example json](example.json) for a singlestat panel as shown in the scr
 
 ## Usage
 
-Before the first use run pip3 install -r requirements.txt
-
-Enter your desired information in config.ini and run InfluxdbComcast.py
-
-Optionally, you can specify the --config argument to load the config file from a different location.  
 
 
 #### Requirements
 
-Python 3+
-
-You will need the influxdb library installed to use this - [Found Here](https://github.com/influxdata/influxdb-python)
+Docker
+Currently running on Debian Linux x86, will likely continue further testing on Raspbian for arm32/64 arch
 
 ## Docker Setup
 
 1. Install [Docker](https://www.docker.com/)
 
-2. Make a directory to hold the config.ini file. Navigate to that directory and download the sample config.ini in this repo.
-```bash
-mkdir comcastUsage-for-influxdb
-curl -O https://raw.githubusercontent.com/billimek/comcastUsage-for-influxdb/blob/master/config.ini comcastUsage-for-influxdb/config.ini
-cd comcastUsage-for-influxdb
-```
+2. Clone repo in local folder
 
-3. Modify the config file with your influxdb settings.
-```bash
-vim config.ini
-```
-Modify the 'Address =' line include the ip or hostname of your influxdb instance.
-Example:
-```bash
-Address = 10.13.14.200
-```
-
-Modify the 'Username' and 'Password' in the _COMCAST_ section with your comcast login credentials.  *NOTE* you only need the username portion of your comcast login, not the @comcast.com part
+3. Alter config.ini as desired
 Example:
 ```
-[COMCAST]
+[XFINITY]
 Username = annoying_customer
 Password = supersecretpassword
 ```
 
-4. Run the container, pointing to the directory with the config file. This should now pull the image from Docker hub.
+4. Run the container, pointing to the directory with the config file, and an output folder (optional,recommended).
 ```bash
-docker run -d \
---name="comcast" \
--v config.ini:/src/config.ini \
---restart="always" \
-billimek/comcastusage-for-influxdb
+docker run \
+   --name="xfinity" \
+   -v /some/path/config.ini:/app/config.ini \
+   -v /some/path/data:/app/data \
+   xfinity 
 ```
