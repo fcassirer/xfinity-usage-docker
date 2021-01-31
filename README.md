@@ -16,7 +16,7 @@ xfinity-usage was modified to resolve the above state issues and control request
 Status:
 As of today (2021.01.31), this container is working accurately to scrap xfinity account data. I only perform the data request action 2 times per day, since I presume (based on other user's reports) that xFinity will block your username if you request too often. Use at your own discretion !!!!
 
-
+Sample output is located in the '/data' folder.
 
 ![Screenshot](images/comcast_grafana_example.png)
 
@@ -87,7 +87,7 @@ Currently running on Debian Linux x86, will likely continue further testing on R
 
 1. Install [Docker](https://www.docker.com/)
 
-2. Clone repo in local folder
+2. Clone repo to local folder
 
 3. Alter config.ini as desired
 Example:
