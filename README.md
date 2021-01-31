@@ -74,7 +74,6 @@ This code is adopted from the work done by [barrycarey](https://github.com/barry
 ## Grafana singlestat example
 See this [example json](example.json) for a singlestat panel as shown in the screenshot above
 
-## Usage
 
 
 
@@ -87,7 +86,7 @@ Currently running on Debian Linux x86, will likely continue further testing on R
 
 1. Install [Docker](https://www.docker.com/)
 
-2. Clone repo to local folder
+2. Clone repo to <local folder>
 
 3. Alter config.ini as desired
 Example:
@@ -96,8 +95,14 @@ Example:
 Username = annoying_customer
 Password = supersecretpassword
 ```
+4. Build the container
+```bash
+cd <local folder>
+docker build -t xfinity .
+```
 
-4. Run the container, pointing to the directory with the config file, and an output folder (optional,recommended).
+## Usage
+5. Run the container, pointing to the directory with the config file, and an output folder (optional,recommended)
 ```bash
 docker run \
    --name="xfinity" \
