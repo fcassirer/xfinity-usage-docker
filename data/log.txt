@@ -1,0 +1,219 @@
+# ./cmds.sh 
+xfinity
+Sending build context to Docker daemon  344.6kB
+Step 1/24 : FROM ubuntu:bionic
+ ---> c090eaba6b94
+Step 2/24 : RUN apt-get update && apt-get install -y     python3 python3-pip     fonts-liberation libappindicator3-1 libasound2 libatk-bridge2.0-0     libnspr4 libnss3 lsb-release xdg-utils libxss1 libdbus-glib-1-2     libgbm1     curl unzip wget     xvfb
+ ---> Using cache
+ ---> bb193af0628c
+Step 3/24 : RUN GECKODRIVER_VERSION=`curl https://github.com/mozilla/geckodriver/releases/latest | grep -Po 'v[0-9]+.[0-9]+.[0-9]+'` &&     wget https://github.com/mozilla/geckodriver/releases/download/$GECKODRIVER_VERSION/geckodriver-$GECKODRIVER_VERSION-linux64.tar.gz &&     tar -zxf geckodriver-$GECKODRIVER_VERSION-linux64.tar.gz -C /usr/local/bin &&     chmod +x /usr/local/bin/geckodriver &&     rm geckodriver-$GECKODRIVER_VERSION-linux64.tar.gz
+ ---> Using cache
+ ---> 932976fadefd
+Step 4/24 : RUN FIREFOX_SETUP=firefox-setup.tar.bz2 &&     apt-get purge firefox &&     wget -O $FIREFOX_SETUP "https://download.mozilla.org/?product=firefox-latest&os=linux64" &&     tar xjf $FIREFOX_SETUP -C /opt/ &&     ln -s /opt/firefox/firefox /usr/bin/firefox &&     rm $FIREFOX_SETUP
+ ---> Using cache
+ ---> f10702760db4
+Step 5/24 : RUN CHROMEDRIVER_VERSION=`curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE` &&     wget https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip &&     unzip chromedriver_linux64.zip -d /usr/bin &&     chmod +x /usr/bin/chromedriver &&     rm chromedriver_linux64.zip
+ ---> Using cache
+ ---> 909e63ba7320
+Step 6/24 : RUN CHROME_SETUP=google-chrome.deb &&     wget -O $CHROME_SETUP "https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb" &&     dpkg -i $CHROME_SETUP &&     apt-get install -y -f &&     rm $CHROME_SETUP
+ ---> Using cache
+ ---> 1df5e8f89dde
+Step 7/24 : RUN wget https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2 &&     tar -jxf phantomjs-2.1.1-linux-x86_64.tar.bz2 &&     cp phantomjs-2.1.1-linux-x86_64/bin/phantomjs /usr/local/bin/phantomjs &&     rm phantomjs-2.1.1-linux-x86_64.tar.bz2
+ ---> Using cache
+ ---> d2435766b202
+Step 8/24 : RUN pip3 install selenium
+ ---> Using cache
+ ---> e06206955a48
+Step 9/24 : RUN pip3 install pyvirtualdisplay
+ ---> Using cache
+ ---> 05ab03b6185c
+Step 10/24 : RUN pip3 install Selenium-Screenshot
+ ---> Using cache
+ ---> 1bbc8933f0db
+Step 11/24 : RUN pip3 install influxdb
+ ---> Using cache
+ ---> 58ba4c12319d
+Step 12/24 : ADD xfinity-usage xfinity-usage
+ ---> Using cache
+ ---> d3aaa089efdc
+Step 13/24 : WORKDIR /xfinity-usage
+ ---> Using cache
+ ---> 4bdbb1666537
+Step 14/24 : RUN pip3 install -e .
+ ---> Using cache
+ ---> 546d8b3b5511
+Step 15/24 : ENV LANG C.UTF-8
+ ---> Using cache
+ ---> f9a93eacd701
+Step 16/24 : ENV LC_ALL C.UTF-8
+ ---> Using cache
+ ---> d86ea5f7abfd
+Step 17/24 : ENV PYTHONUNBUFFERED=1
+ ---> Using cache
+ ---> 098df36682bd
+Step 18/24 : WORKDIR /app
+ ---> Using cache
+ ---> 026148d8dcac
+Step 19/24 : COPY run.py /app
+ ---> Using cache
+ ---> 650d4c0b858b
+Step 20/24 : COPY config.ini /app
+ ---> Using cache
+ ---> c3976bf6d355
+Step 21/24 : ENV APP_HOME /app/data
+ ---> Using cache
+ ---> ec9b1f016628
+Step 22/24 : WORKDIR /$APP_HOME
+ ---> Using cache
+ ---> 1f4a0ff4c1ac
+Step 23/24 : CMD tail -f /dev/null
+ ---> Using cache
+ ---> 7666125e57c7
+Step 24/24 : CMD ["python3", "-u", "/app/run.py"]
+ ---> Using cache
+ ---> 96722f6a452c
+Successfully built 96722f6a452c
+Successfully tagged xfinity:latest
+Loading Configuration File config.ini
+Configuration Successfully Loaded
+2021-01-31 16:42:05,087 [DEBUG xfinity_usage.py:121 - root.__init__() ] Getting browser instance...
+2021-01-31 16:42:05,088 [DEBUG xfinity_usage.py:127 - root.run() ] Getting page...
+2021-01-31 16:42:05,089 [DEBUG xfinity_usage.py:402 - root.get_browser() ] getting Firefox browser (local)
+2021-01-31 16:42:05,089 [DEBUG xfinity_usage.py:404 - root.get_browser() ] exporting DISPLAY=:0
+2021-01-31 16:42:05,141 [DEBUG connectionpool.py:231 - urllib3.connectionpool._new_conn() ] Starting new HTTP connection (1): 127.0.0.1:32779
+2021-01-31 16:42:17,347 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "POST /session HTTP/1.1" 200 697
+2021-01-31 16:42:17,572 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "POST /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/window/rect HTTP/1.1" 200 49
+2021-01-31 16:42:17,576 [DEBUG xfinity_usage.py:443 - root.get_browser() ] returning browser
+2021-01-31 16:42:17,577 [INFO xfinity_usage.py:382 - root.get() ] GET https://customer.xfinity.com/#/devices
+2021-01-31 16:42:24,606 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "POST /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/url HTTP/1.1" 200 14
+2021-01-31 16:42:24,888 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "GET /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/url HTTP/1.1" 200 50
+2021-01-31 16:42:25,042 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "POST /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/execute/sync HTTP/1.1" 200 20
+2021-01-31 16:42:25,237 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "GET /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/source HTTP/1.1" 200 122790
+2021-01-31 16:42:25,652 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "GET /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/screenshot HTTP/1.1" 200 60108
+2021-01-31 16:42:25,678 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "GET /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/url HTTP/1.1" 200 50
+2021-01-31 16:42:25,682 [DEBUG xfinity_usage.py:361 - root.do_screenshot() ] Screenshot: /app/data/1.png of: https://customer.xfinity.com/#/devices
+2021-01-31 16:42:25,754 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "POST /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/element HTTP/1.1" 404 294
+2021-01-31 16:42:26,296 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "POST /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/element HTTP/1.1" 404 294
+2021-01-31 16:42:26,930 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "POST /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/element HTTP/1.1" 404 294
+2021-01-31 16:42:29,504 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "POST /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/element HTTP/1.1" 404 294
+2021-01-31 16:42:30,628 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "POST /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/element HTTP/1.1" 200 88
+2021-01-31 16:42:30,638 [INFO xfinity_usage.py:229 - root.get_usage_page() ] Not logged in; logging in now; count now at 0
+2021-01-31 16:42:31,236 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "GET /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/screenshot HTTP/1.1" 200 5916
+2021-01-31 16:42:31,288 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "GET /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/url HTTP/1.1" 200 445
+2021-01-31 16:42:31,291 [DEBUG xfinity_usage.py:361 - root.do_screenshot() ] Screenshot: /app/data/2.png of: https://login.xfinity.com/login?r=comcast.net&s=oauth&continue=https%3A%2F%2Foauth.xfinity.com%2Foauth%2Fauthorize%3Fclient_id%3Dmy-account-web%26prompt%3Dlogin%26redirect_uri%3Dhttps%253A%252F%252Fcustomer.xfinity.com%252Foauth%252Fcallback%26response_type%3Dcode%26state%3Dhttps%253A%252F%252Fcustomer.xfinity.com%252F%2523%252Fdevices%26response%3D1&client_id=my-account-web&reqId=dabe4cee-31fa-425d-9e35-93175ba707b7&forceAuthn=1
+2021-01-31 16:42:31,292 [INFO xfinity_usage.py:243 - root.get_usage_page() ] Trying to login...
+2021-01-31 16:42:31,406 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "GET /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/url HTTP/1.1" 200 445
+2021-01-31 16:42:31,409 [INFO xfinity_usage.py:155 - root.do_login() ] Logging in (https://login.xfinity.com/login?r=comcast.net&s=oauth&continue=https%3A%2F%2Foauth.xfinity.com%2Foauth%2Fauthorize%3Fclient_id%3Dmy-account-web%26prompt%3Dlogin%26redirect_uri%3Dhttps%253A%252F%252Fcustomer.xfinity.com%252Foauth%252Fcallback%26response_type%3Dcode%26state%3Dhttps%253A%252F%252Fcustomer.xfinity.com%252F%2523%252Fdevices%26response%3D1&client_id=my-account-web&reqId=dabe4cee-31fa-425d-9e35-93175ba707b7&forceAuthn=1)
+2021-01-31 16:42:31,486 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "POST /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/execute/sync HTTP/1.1" 200 20
+2021-01-31 16:42:31,829 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "GET /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/source HTTP/1.1" 200 27407
+2021-01-31 16:42:33,219 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "GET /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/screenshot HTTP/1.1" 200 429688
+2021-01-31 16:42:33,302 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "GET /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/url HTTP/1.1" 200 445
+2021-01-31 16:42:33,304 [DEBUG xfinity_usage.py:361 - root.do_screenshot() ] Screenshot: /app/data/3.png of: https://login.xfinity.com/login?r=comcast.net&s=oauth&continue=https%3A%2F%2Foauth.xfinity.com%2Foauth%2Fauthorize%3Fclient_id%3Dmy-account-web%26prompt%3Dlogin%26redirect_uri%3Dhttps%253A%252F%252Fcustomer.xfinity.com%252Foauth%252Fcallback%26response_type%3Dcode%26state%3Dhttps%253A%252F%252Fcustomer.xfinity.com%252F%2523%252Fdevices%26response%3D1&client_id=my-account-web&reqId=dabe4cee-31fa-425d-9e35-93175ba707b7&forceAuthn=1
+2021-01-31 16:42:33,364 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "POST /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/element HTTP/1.1" 404 316
+2021-01-31 16:42:33,399 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "GET /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/source HTTP/1.1" 200 27740
+2021-01-31 16:42:33,440 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "POST /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/element HTTP/1.1" 200 88
+2021-01-31 16:42:33,480 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "POST /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/element/c4fcdfa3-c08c-49f4-84b0-946592aeecee/clear HTTP/1.1" 200 14
+2021-01-31 16:42:34,071 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "POST /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/element/c4fcdfa3-c08c-49f4-84b0-946592aeecee/value HTTP/1.1" 200 14
+2021-01-31 16:42:34,113 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "POST /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/element HTTP/1.1" 200 88
+2021-01-31 16:42:34,198 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "GET /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/element/beb45dc1-d3cb-418c-b93e-df05ead6d0ac/selected HTTP/1.1" 200 15
+2021-01-31 16:42:34,203 [DEBUG xfinity_usage.py:179 - root.do_login() ] Clicking "Remember Me"
+2021-01-31 16:42:34,240 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "POST /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/element HTTP/1.1" 200 88
+2021-01-31 16:42:34,847 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "POST /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/element/8d24527b-7286-4b2b-b6c3-dd517afeb07d/click HTTP/1.1" 200 14
+2021-01-31 16:42:34,867 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "POST /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/element HTTP/1.1" 200 88
+2021-01-31 16:42:34,887 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "POST /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/element HTTP/1.1" 200 88
+2021-01-31 16:42:34,914 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "POST /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/element/e7d141ec-dac6-4859-8df9-44eca18425cd/clear HTTP/1.1" 200 14
+2021-01-31 16:42:35,111 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "POST /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/element/e7d141ec-dac6-4859-8df9-44eca18425cd/value HTTP/1.1" 200 14
+2021-01-31 16:42:35,114 [DEBUG xfinity_usage.py:203 - root.do_login() ] Clicking Sign In button
+2021-01-31 16:42:35,129 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "GET /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/url HTTP/1.1" 200 445
+2021-01-31 16:42:35,634 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "GET /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/screenshot HTTP/1.1" 200 429916
+2021-01-31 16:42:35,670 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "GET /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/url HTTP/1.1" 200 445
+2021-01-31 16:42:35,673 [DEBUG xfinity_usage.py:361 - root.do_screenshot() ] Screenshot: /app/data/4.png of: https://login.xfinity.com/login?r=comcast.net&s=oauth&continue=https%3A%2F%2Foauth.xfinity.com%2Foauth%2Fauthorize%3Fclient_id%3Dmy-account-web%26prompt%3Dlogin%26redirect_uri%3Dhttps%253A%252F%252Fcustomer.xfinity.com%252Foauth%252Fcallback%26response_type%3Dcode%26state%3Dhttps%253A%252F%252Fcustomer.xfinity.com%252F%2523%252Fdevices%26response%3D1&client_id=my-account-web&reqId=dabe4cee-31fa-425d-9e35-93175ba707b7&forceAuthn=1
+2021-01-31 16:42:45,667 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "POST /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/element/7fa1afa3-f03d-4b47-aded-773e52d89b29/click HTTP/1.1" 200 14
+2021-01-31 16:42:46,449 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "GET /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/screenshot HTTP/1.1" 200 59684
+2021-01-31 16:42:46,579 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "GET /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/url HTTP/1.1" 200 50
+2021-01-31 16:42:46,581 [DEBUG xfinity_usage.py:361 - root.do_screenshot() ] Screenshot: /app/data/5.png of: https://customer.xfinity.com/#/devices
+2021-01-31 16:42:46,673 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "GET /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/url HTTP/1.1" 200 50
+2021-01-31 16:42:47,414 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "POST /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/execute/sync HTTP/1.1" 200 20
+2021-01-31 16:42:47,564 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "GET /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/source HTTP/1.1" 200 123188
+2021-01-31 16:42:47,992 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "GET /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/screenshot HTTP/1.1" 200 60036
+2021-01-31 16:42:48,049 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "GET /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/url HTTP/1.1" 200 50
+2021-01-31 16:42:48,051 [DEBUG xfinity_usage.py:361 - root.do_screenshot() ] Screenshot: /app/data/6.png of: https://customer.xfinity.com/#/devices
+2021-01-31 16:42:48,053 [INFO xfinity_usage.py:382 - root.get() ] GET https://customer.xfinity.com/#/devices
+2021-01-31 16:42:48,116 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "POST /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/url HTTP/1.1" 200 14
+2021-01-31 16:42:48,220 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "GET /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/url HTTP/1.1" 200 50
+2021-01-31 16:42:48,281 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "POST /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/execute/sync HTTP/1.1" 200 20
+2021-01-31 16:42:48,337 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "GET /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/source HTTP/1.1" 200 123206
+2021-01-31 16:42:48,621 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "GET /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/screenshot HTTP/1.1" 200 59948
+2021-01-31 16:42:48,636 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "GET /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/url HTTP/1.1" 200 50
+2021-01-31 16:42:48,640 [DEBUG xfinity_usage.py:361 - root.do_screenshot() ] Screenshot: /app/data/7.png of: https://customer.xfinity.com/#/devices
+2021-01-31 16:42:48,654 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "POST /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/element HTTP/1.1" 404 294
+2021-01-31 16:42:49,171 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "POST /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/element HTTP/1.1" 404 294
+2021-01-31 16:42:49,685 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "POST /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/element HTTP/1.1" 404 294
+2021-01-31 16:42:50,244 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "POST /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/element HTTP/1.1" 404 294
+2021-01-31 16:42:50,777 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "POST /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/element HTTP/1.1" 404 294
+2021-01-31 16:42:51,299 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "POST /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/element HTTP/1.1" 404 294
+2021-01-31 16:42:51,827 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "POST /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/element HTTP/1.1" 404 294
+2021-01-31 16:42:54,444 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "POST /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/element HTTP/1.1" 404 294
+2021-01-31 16:42:56,112 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "POST /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/element HTTP/1.1" 404 294
+2021-01-31 16:42:56,919 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "POST /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/element HTTP/1.1" 404 294
+2021-01-31 16:42:57,548 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "POST /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/element HTTP/1.1" 404 294
+2021-01-31 16:42:58,083 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "POST /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/element HTTP/1.1" 404 294
+2021-01-31 16:42:58,620 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "POST /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/element HTTP/1.1" 404 294
+2021-01-31 16:42:59,251 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "POST /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/element HTTP/1.1" 404 294
+2021-01-31 16:42:59,792 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "POST /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/element HTTP/1.1" 404 294
+2021-01-31 16:43:00,320 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "POST /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/element HTTP/1.1" 404 294
+2021-01-31 16:43:00,841 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "POST /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/element HTTP/1.1" 404 294
+2021-01-31 16:43:01,363 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "POST /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/element HTTP/1.1" 404 294
+2021-01-31 16:43:01,882 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "POST /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/element HTTP/1.1" 404 294
+2021-01-31 16:43:02,403 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "POST /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/element HTTP/1.1" 404 294
+2021-01-31 16:43:02,928 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "POST /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/element HTTP/1.1" 404 294
+2021-01-31 16:43:03,471 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "POST /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/element HTTP/1.1" 404 294
+2021-01-31 16:43:03,990 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "POST /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/element HTTP/1.1" 404 294
+2021-01-31 16:43:04,512 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "POST /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/element HTTP/1.1" 404 294
+2021-01-31 16:43:05,043 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "POST /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/element HTTP/1.1" 404 294
+2021-01-31 16:43:05,565 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "POST /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/element HTTP/1.1" 404 294
+2021-01-31 16:43:06,082 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "POST /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/element HTTP/1.1" 404 294
+2021-01-31 16:43:06,610 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "POST /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/element HTTP/1.1" 404 294
+2021-01-31 16:43:07,127 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "POST /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/element HTTP/1.1" 404 294
+2021-01-31 16:43:07,670 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "POST /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/element HTTP/1.1" 404 294
+2021-01-31 16:43:08,187 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "POST /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/element HTTP/1.1" 404 294
+2021-01-31 16:43:09,052 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "GET /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/screenshot HTTP/1.1" 200 89040
+2021-01-31 16:43:09,082 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "GET /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/url HTTP/1.1" 200 50
+2021-01-31 16:43:09,086 [DEBUG xfinity_usage.py:361 - root.do_screenshot() ] Screenshot: /app/data/8.png of: https://customer.xfinity.com/#/devices
+2021-01-31 16:43:09,086 [INFO xfinity_usage.py:248 - root.get_usage_page() ] Sleeping 5s...
+2021-01-31 16:43:14,112 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "POST /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/execute/sync HTTP/1.1" 200 20
+2021-01-31 16:43:14,174 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "GET /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/source HTTP/1.1" 200 162985
+2021-01-31 16:43:14,585 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "GET /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/screenshot HTTP/1.1" 200 89040
+2021-01-31 16:43:14,606 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "GET /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/url HTTP/1.1" 200 50
+2021-01-31 16:43:14,608 [DEBUG xfinity_usage.py:361 - root.do_screenshot() ] Screenshot: /app/data/9.png of: https://customer.xfinity.com/#/devices
+2021-01-31 16:43:14,650 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "GET /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/source HTTP/1.1" 200 162985
+2021-01-31 16:43:14,659 [INFO xfinity_usage.py:253 - root.get_usage_page() ] <span class="polaris-greeting"> not in page source;login may have failed.
+2021-01-31 16:43:14,990 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "GET /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/screenshot HTTP/1.1" 200 89040
+2021-01-31 16:43:15,011 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "GET /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/url HTTP/1.1" 200 50
+2021-01-31 16:43:15,017 [DEBUG xfinity_usage.py:361 - root.do_screenshot() ] Screenshot: /app/data/10.png of: https://customer.xfinity.com/#/devices
+2021-01-31 16:43:15,017 [INFO xfinity_usage.py:248 - root.get_usage_page() ] Sleeping 5s...
+2021-01-31 16:43:20,038 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "POST /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/execute/sync HTTP/1.1" 200 20
+2021-01-31 16:43:20,134 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "GET /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/source HTTP/1.1" 200 162985
+2021-01-31 16:43:20,478 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "GET /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/screenshot HTTP/1.1" 200 89040
+2021-01-31 16:43:20,497 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "GET /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/url HTTP/1.1" 200 50
+2021-01-31 16:43:20,499 [DEBUG xfinity_usage.py:361 - root.do_screenshot() ] Screenshot: /app/data/11.png of: https://customer.xfinity.com/#/devices
+2021-01-31 16:43:20,588 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "GET /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/source HTTP/1.1" 200 162985
+2021-01-31 16:43:20,597 [INFO xfinity_usage.py:253 - root.get_usage_page() ] <span class="polaris-greeting"> not in page source;login may have failed.
+2021-01-31 16:43:20,922 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "GET /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/screenshot HTTP/1.1" 200 89040
+2021-01-31 16:43:20,940 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "GET /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/url HTTP/1.1" 200 50
+2021-01-31 16:43:20,943 [DEBUG xfinity_usage.py:361 - root.do_screenshot() ] Screenshot: /app/data/12.png of: https://customer.xfinity.com/#/devices
+2021-01-31 16:43:20,943 [DEBUG xfinity_usage.py:259 - root.get_usage_json() ] Getting usage JSON from: https://customer.xfinity.com/apis/services/internet/usage
+2021-01-31 16:43:20,944 [INFO xfinity_usage.py:382 - root.get() ] GET https://customer.xfinity.com/apis/services/internet/usage
+2021-01-31 16:43:23,303 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "POST /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/url HTTP/1.1" 200 14
+2021-01-31 16:43:23,352 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "GET /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/url HTTP/1.1" 200 69
+2021-01-31 16:43:23,397 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "POST /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/execute/sync HTTP/1.1" 200 20
+2021-01-31 16:43:23,419 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "GET /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/source HTTP/1.1" 200 4704
+2021-01-31 16:43:23,907 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "GET /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/screenshot HTTP/1.1" 200 318104
+2021-01-31 16:43:23,931 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "GET /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/url HTTP/1.1" 200 69
+2021-01-31 16:43:23,933 [DEBUG xfinity_usage.py:361 - root.do_screenshot() ] Screenshot: /app/data/13.png of: https://customer.xfinity.com/apis/services/internet/usage
+2021-01-31 16:43:23,947 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "POST /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/element HTTP/1.1" 200 88
+2021-01-31 16:43:24,041 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "GET /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d/element/f40cda7e-f3b7-4829-834a-b2a98b03c655/text HTTP/1.1" 200 4576
+2021-01-31 16:43:27,003 [DEBUG connectionpool.py:461 - urllib3.connectionpool._make_request() ] http://127.0.0.1:32779 "DELETE /session/ef3a013a-e3d0-4f04-8916-17bc8440b82d HTTP/1.1" 200 14
+Used: 755
+Total: 1229
+

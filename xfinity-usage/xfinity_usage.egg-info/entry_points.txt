@@ -1,0 +1,4 @@
+
+    [console_scripts]
+    xfinity-usage = xfinity_usage.xfinity_usage:main
+    

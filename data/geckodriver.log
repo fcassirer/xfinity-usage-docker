@@ -1,0 +1,22 @@
+1612111325123	geckodriver	INFO	Listening on 127.0.0.1:32779
+1612111325178	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofileA8WNX8"
+*** You are running in headless mode.
+[GFX1-]: glxtest: libpci missing
+[GFX1-]: glxtest: Unable to open a connection to the X server
+[GFX1-]: glxtest: libEGL missing
+[GFX1-]: No GPUs detected via PCI
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new Error("", "(unknown module)"))
+1612111336945	Marionette	INFO	Listening on port 38501
+1612111337253	Marionette	WARN	TLS certificate errors will be ignored for this session
+1612111337344	Marionette	ERROR	[15] No reply from Marionette:Register
+JavaScript error: , line 0: uncaught exception: Object
+JavaScript error: , line 0: uncaught exception: Object
+JavaScript error: , line 0: uncaught exception: Object
+JavaScript warning: https://login.xfinity.com/static/js/comcast-common.js, line 1: WebGL warning: <Create>: Can't use WebGL in headless mode (https://bugzil.la/1375585).
+JavaScript warning: https://login.xfinity.com/static/js/comcast-common.js, line 1: Failed to create WebGL context: WebGL creation failed: 
+* Can't use WebGL in headless mode (https://bugzil.la/1375585).
+JavaScript warning: https://login.xfinity.com/static/js/comcast-common.js, line 1: WebGL warning: <Create>: Can't use WebGL in headless mode (https://bugzil.la/1375585).
+JavaScript warning: https://login.xfinity.com/static/js/comcast-common.js, line 1: Failed to create WebGL context: WebGL creation failed: 
+* Can't use WebGL in headless mode (https://bugzil.la/1375585).
+JavaScript error: , line 0: uncaught exception: undefined
+1612111404073	Marionette	INFO	Stopped listening on port 38501
