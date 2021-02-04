@@ -46,25 +46,35 @@ This code is adopted from the work done by [barrycarey](https://github.com/barry
 |Key            |Description                                                                                                         |
 |:--------------|:-------------------------------------------------------------------------------------------------------------------|
 |Username       |Comcast username (don't include the @comcast.com)                                                                   |
-|Password       |Password for above user  
+|Password       |Password for above user
 #### LOG
 |Key            |Description                                                                                                         |
 |:--------------|:-------------------------------------------------------------------------------------------------------------------|
-|Enabled        |Set to True to activate 
+|Enabled        |Set to True to activate
 #### FILE
 |Key            |Description                                                                                                         |
 |:--------------|:-------------------------------------------------------------------------------------------------------------------|
-|Enabled        |Set to True to activate  
+|Enabled        |Set to True to activate
 |Filename       |JSON output is written to to '/data'. default = output.json                                                         |
 #### INFLUXDB
-|Key            |Description                                                                                                         |
-|:--------------|:-------------------------------------------------------------------------------------------------------------------|
-|Enabled        |Set to True to activate 
-|Address        |IP address of InfluxDB                                                                                              |
-|Port           |InfluxDB port to connect to.  8086 in most cases                                                                    |
-|Database       |Database to write collected stats to                                                                                |
-|Username       |User that has access to the database                                                                                |
-|Password       |Password for above user                                                                                             |
+| Key      | Description                                      |
+|:---------|:-------------------------------------------------|
+| Enabled  | Set to True to activate                          |
+| Address  | IP address of InfluxDB                           |
+| Port     | InfluxDB port to connect to.  8086 in most cases |
+| Username | User that has access to the database             |
+| Password | Password for above user                          |
+
+#### MQTT
+| Key      | Description                                  |
+|:---------|:---------------------------------------------|
+| Enabled  | Set to True to activate                      |
+| Address  | IP address of MQTT server                    |
+| Port     | MQTT port to connect to.  1883 in most cases |
+| Username | User that has access to the service          |
+| Password | Password for above user                      |
+| Topic    | Topic string to publish result               |
+| Retain   | True/False to set retain status for topic    |
 
 
 
@@ -95,7 +105,7 @@ Currently running on Debian Linux x86, will likely continue further testing on R
 
 2. Clone repo to 'any local folder'
 
-3. Alter config.ini as desired
+3. copy config.ini.example to config.ini and change as needed
 Example:
 ```
 [XFINITY]
@@ -115,5 +125,5 @@ docker run \
    --name="xfinity" \
    -v /some/path/config.ini:/app/config.ini \
    -v /some/path/data:/app/data \
-   xfinity 
+   xfinity
 ```

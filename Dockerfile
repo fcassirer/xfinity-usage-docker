@@ -51,6 +51,7 @@ RUN wget https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x
 RUN pip3 install selenium
 RUN pip3 install pyvirtualdisplay
 RUN pip3 install Selenium-Screenshot
+RUN pip3 install paho-mqtt
 
 # Install pip requirements for influx
 RUN pip3 install influxdb
@@ -76,5 +77,3 @@ WORKDIR /$APP_HOME
 
 CMD tail -f /dev/null
 CMD ["python3", "-u", "/app/run.py"]
-
-

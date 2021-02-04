@@ -7,8 +7,11 @@ from influxdb import InfluxDBClient
 from influxdb.exceptions import InfluxDBClientError, InfluxDBServerError
 import time
 import logging
+import json
 from xfinity_usage.xfinity_usage import XfinityUsage
 
+import paho.mqtt.client as mqtt
+import paho.mqtt.publish as mqttpublish
 
 
 class configManager():
@@ -52,6 +55,15 @@ class configManager():
         self.influx_ssl = self.config['INFLUXDB'].getboolean('SSL', fallback=False)
         self.influx_verify_ssl = self.config['INFLUXDB'].getboolean('Verify_SSL', fallback=True)
 
+        # MQTT
+        self.mqtt_enabled = self.config['MQTT'].getboolean('Enabled', fallback=False)
+        self.mqtt_user = self.config['MQTT'].get('Username', fallback='mqtt')
+        self.mqtt_password = self.config['MQTT'].get('Password', fallback='')
+        self.mqtt_host = self.config['MQTT'].get('Address', fallback='localhost')
+        self.mqtt_port = self.config['MQTT'].getint('Port', fallback=1883)
+        self.mqtt_topic = self.config['MQTT'].get('Topic', fallback='xfinity')
+        self.mqtt_retain = self.config['MQTT'].getboolean('Retain', fallback=False)
+
         # Comcast
         self.comcast_user = self.config['XFINITY'].get('Username', fallback='')
         self.comcast_password = self.config['XFINITY'].get('Password', fallback='')
@@ -69,6 +81,7 @@ class XfinityUsageScrap():
         self.file_enabled = self.config.file_enabled
         self.file_filename = self.config.file_filename
         self.influx_enabled = self.config.influx_enabled
+        self.mqtt_enabled = self.config.mqtt_enabled
 
         self.used = 0
         self.total = 0
@@ -91,15 +104,33 @@ class XfinityUsageScrap():
             print('Used: {}'.format(str(self.used)))
             print('Total: {}'.format(str(self.total)))
 
+        res_payload = json.dumps(self.res,indent=4, sort_keys=True)
+
         if self.file_enabled:
 #FIXME __ DONE ???E
             #f = open('/usr/src/app/' + self.file_filename,'w')
             f = open(self.file_filename,'w')
-            f.write(str(self.res) + '\n')
+            f.write(res_payload + '\n')
             f.close()
 
         if self.influx_enabled:
             self.write_influx_data(input_points)
+
+        if self.mqtt_enabled:
+
+            auth= {'username': self.config.mqtt_user,
+                   'password': self.config.mqtt_password
+                  }
+
+            mqttpublish.single(self.config.mqtt_topic,
+                   payload=res_payload,
+                   qos=0,
+                   retain=self.config.mqtt_retain,
+                   hostname=self.config.mqtt_host,
+                   port=self.config.mqtt_port,
+                   auth=auth,
+                   client_id="xfinity_usage_reporter")
+
 
     def run(self):
 
@@ -140,5 +171,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-    
-
