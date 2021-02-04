@@ -5,7 +5,6 @@ README.rst
 setup.cfg
 setup.py
 xfinity_usage/__init__.py
-xfinity_usage/test.py
 xfinity_usage/version.py
 xfinity_usage/xfinity_usage.py
 xfinity_usage.egg-info/PKG-INFO

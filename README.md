@@ -38,6 +38,10 @@ This code is adopted from the work done by [barrycarey](https://github.com/barry
 #### GENERAL
 |Key            |Description                                                                                                         |
 |:--------------|:-------------------------------------------------------------------------------------------------------------------|
+|IntervalStart  |IntervalStart is the starting HH:MM:SS to sync the Interval to.  If this is set and Iterations=0, the next iteration that
+would cross this time will be forced to this time and all subsequent interations will then be rebased from there.  This is intended to force a predictable time of day when
+the check will be done.  Setting the IntervalStart to 00:00:00 and the Interval to 43200 would cause a steady state of checks twice a day at 00:00:00 and 12:00:00.  If this value
+is not set, the interval will be based on the time the app is started (previous behavior) |
 |Interval       |Interval is seconds between each scraping scheduled task                                                            |
 |Iterations     |Iterations is the count of scrap tasks performed before exit; set to zero for indefinite                            |
 |Attempts       |Attempts is the number of web requests errors before failure                                                        |

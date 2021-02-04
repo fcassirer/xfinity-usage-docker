@@ -12,6 +12,8 @@ from xfinity_usage.xfinity_usage import XfinityUsage
 
 import paho.mqtt.client as mqtt
 import paho.mqtt.publish as mqttpublish
+from datetime import datetime, timedelta
+import time
 
 
 class configManager():
@@ -37,6 +39,25 @@ class configManager():
         self.interval = self.config['GENERAL'].getint('Interval', fallback=14400)
         self.iterations = self.config['GENERAL'].getint('Iterations', fallback=1)
         self.verbose = self.config['GENERAL'].getboolean('Verbose', fallback=False)
+        self.debug = self.config['GENERAL'].getboolean('Debug', fallback=False)
+        intstart = self.config['GENERAL'].get('IntervalStart', fallback=None)
+
+        # Figure out when the interval should start, i.e, anchor the interval to a
+        # time in the day for predictable scrape times
+
+        if intstart:
+            now = datetime.now()
+            targettime = datetime.strptime(intstart,"%H:%M:%S")
+            starttime = now.replace(hour=targettime.hour,
+                                    minute=targettime.minute,
+                                    second=targettime.second)
+
+            if (starttime + timedelta(seconds=self.interval)) < now:
+                starttime += timedelta(days=1)
+
+            self.firstrunoftheday = starttime.timestamp()
+        else:
+            self.firstrunoftheday = 0
 
         # Log
         self.log_enabled = self.config['LOG'].getboolean('Enabled', fallback=False)
@@ -82,10 +103,13 @@ class XfinityUsageScrap():
         self.file_filename = self.config.file_filename
         self.influx_enabled = self.config.influx_enabled
         self.mqtt_enabled = self.config.mqtt_enabled
+        self.firstrunoftheday = self.config.firstrunoftheday
 
         self.used = 0
         self.total = 0
         self.unit = None
+
+        self
 
     def send_results(self):
 
@@ -122,14 +146,18 @@ class XfinityUsageScrap():
                    'password': self.config.mqtt_password
                   }
 
-            mqttpublish.single(self.config.mqtt_topic,
-                   payload=res_payload,
-                   qos=0,
-                   retain=self.config.mqtt_retain,
-                   hostname=self.config.mqtt_host,
-                   port=self.config.mqtt_port,
-                   auth=auth,
-                   client_id="xfinity_usage_reporter")
+            try:
+              mqttpublish.single(self.config.mqtt_topic,
+                     payload=res_payload,
+                     qos=0,
+                     retain=self.config.mqtt_retain,
+                     hostname=self.config.mqtt_host,
+                     port=self.config.mqtt_port,
+                     auth=auth,
+                     client_id="xfinity_usage_reporter")
+            except Exception as e:
+                if self.log_enabled:
+                    print("Failed to publish to MQTT, exception {}".format(e))
 
 
     def run(self):
@@ -145,7 +173,20 @@ class XfinityUsageScrap():
         while (count < total):
             if self.iterations > 0:
                count+=1
-            res = xfinity.run()
+            if self.config.debug:
+                try:
+                  with open(self.file_filename) as f:
+                      res = json.loads(f.read())
+                except Exception as e:
+                    print("DEBUG: Error opening {}, exception={}".format(self.file_filename,e))
+                    res = {
+                      'used': -1,
+                      'total': -1,
+                      'units': "None"
+                    }
+
+            else:
+                res = xfinity.run()
             # print("Used %d of %d %s this month." % (
             #     res['used'], res['total'], res['units']
             # ))
@@ -157,7 +198,24 @@ class XfinityUsageScrap():
             self.send_results()
 
             if (count < total):
-               time.sleep(self.config.interval)
+
+                # Attempt to sync up our interval sleep to the next interval start time
+                # until then we just sleep the normal interval.  When we are within
+                # an interval of the sync time, just sleep till then, that is, if our
+                # sync time is 00:00:00 we'll be sure to wake up at midnight and start
+                # counting our intervals from there.  That only happens the first day we
+                # are running, after that, the interval should be an even multiple of a day
+
+                sleep = self.config.interval
+                if self.firstrunoftheday:
+                    now = time.time()
+                    if (now+self.config.interval) > self.firstrunoftheday:
+                        # Sleep a short interval to sync up to the start time
+                        sleep = self.firstrunoftheday - now
+                        # stop checking from here on out
+                        self.firstrunoftheday = 0
+
+                time.sleep(sleep)
 
 
 def main():
@@ -165,6 +223,7 @@ def main():
     parser = argparse.ArgumentParser(description="A tool to collect xFinity internet usage metrics")
     parser.add_argument('--config', default='config.ini', dest='config', help='Specify a custom location for the config file')
     args = parser.parse_args()
+
     collector = XfinityUsageScrap(config=args.config)
     collector.run()
 

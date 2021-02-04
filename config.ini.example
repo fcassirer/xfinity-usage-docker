@@ -1,4 +1,7 @@
 [GENERAL]
+# Starting time for the interval, i.e., we'll sync up the interval with this time for
+#  a predictable scrape time of day.  Unset this to disable
+IntervalStart=00:00:00
 # Interval is seconds between each scraping scheduled task, default is ~4 hours
 Interval=16800
 # Iterations is the count of scrap tasks performed before exit; set to zero for indefinite
@@ -7,6 +10,8 @@ Iterations=0
 Attempts=1
 # Verbose produces debug log and screenprints to '/data'
 Verbose=False
+# Debug, do not connect to xfinity, reuse the last result in 'output.json'
+Debug=False
 
 [XFINITY]
 # NOTE: Username should not included any domain, i.e. '@comcast.net'; just the id before '@'
