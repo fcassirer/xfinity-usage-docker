@@ -1,4 +1,4 @@
-from __future__ import print_function
+
 import configparser
 import os
 import sys
@@ -19,7 +19,7 @@ import time
 class configManager():
 
     def __init__(self, config, path):
-        print('Loading Configuration File {}'.format(config))
+        #print('Loading Configuration File {}'.format(config))
         self.test_server = []
         #config_file = os.path.join(os.getcwd(), config)
         config_file = os.path.join(path, config)
@@ -27,11 +27,36 @@ class configManager():
             self.config = configparser.ConfigParser()
             self.config.read(config_file)
         else:
-            print('ERROR: Unable To Load Config File: {}'.format(config_file))
+            print('Unable To Load Config File: {}'.format(config_file))
             sys.exit(1)
 
         self._load_config_values()
-        print('Configuration Successfully Loaded')
+
+        if self.log_enabled:
+          loglevel = logging.WARNING
+          if self.verbose:
+              loglevel = logging.INFO
+          if self.debug:
+              loglevel = logging.DEBUG
+
+          logger = logging.getLogger()
+          filehandler = logging.FileHandler(self.log_file,'a')
+          formatter = logging.Formatter('%(asctime)-15s::%(levelname)s::%(filename)s::%(funcName)s::%(lineno)d::%(message)s')
+          filehandler.setFormatter(formatter)
+          for hdlr in logger.handlers[:]:
+              if isinstance(hdlr,logging.FileHandler):
+                  log.removeHandler(hdlr)
+          logger.addHandler(filehandler)
+          logger.setLevel(loglevel)
+
+          # Below is a 3.8.5 and beyond better/easier solution
+          #logging.basicConfig(filename=self.log_file,
+          #                    encoding='utf-8',
+          #                    level=loglevel,
+          #                    force=True)  # Force valid for python >=3.8, otherwise you
+                                           #  have ordering issues for importing of logging
+
+        logging.info('Configuration Successfully Loaded')
 
     def _load_config_values(self):
 
@@ -52,15 +77,18 @@ class configManager():
                                     minute=targettime.minute,
                                     second=targettime.second)
 
-            if (starttime + timedelta(seconds=self.interval)) < now:
-                starttime += timedelta(days=1)
-
-            self.firstrunoftheday = starttime.timestamp()
+            # Set the sync up to the next sync time, if it has already passed, shoot for the
+            #  next day
+            if starttime < now:
+                self.firstrunoftheday = (starttime+timedelta(days=1)).timestamp()
+            else:
+                self.firstrunoftheday = starttime.timestamp()
         else:
             self.firstrunoftheday = 0
 
         # Log
         self.log_enabled = self.config['LOG'].getboolean('Enabled', fallback=False)
+        self.log_file = self.config['LOG'].get('Filename', fallback='xfinity_usage.log')
 
         # File
         self.file_enabled = self.config['FILE'].getboolean('Enabled', fallback=False)
@@ -125,8 +153,8 @@ class XfinityUsageScrap():
         ]
 
         if self.log_enabled:
-            print('Used: {}'.format(str(self.used)))
-            print('Total: {}'.format(str(self.total)))
+            logging.info('Used: {}'.format(self.used))
+            logging.info('Total: {}'.format(self.total))
 
         res_payload = json.dumps(self.res,indent=4, sort_keys=True)
 
@@ -157,7 +185,7 @@ class XfinityUsageScrap():
                      client_id="xfinity_usage_reporter")
             except Exception as e:
                 if self.log_enabled:
-                    print("Failed to publish to MQTT, exception {}".format(e))
+                    logging.error("Failed to publish to MQTT, exception {}".format(e))
 
 
     def run(self):
@@ -178,7 +206,7 @@ class XfinityUsageScrap():
                   with open(self.file_filename) as f:
                       res = json.loads(f.read())
                 except Exception as e:
-                    print("DEBUG: Error opening {}, exception={}".format(self.file_filename,e))
+                    logging.debug("Error opening {}, exception={}".format(self.file_filename,e))
                     res = {
                       'used': -1,
                       'total': -1,
@@ -207,14 +235,17 @@ class XfinityUsageScrap():
                 # are running, after that, the interval should be an even multiple of a day
 
                 sleep = self.config.interval
+                now = datetime.now()
                 if self.firstrunoftheday:
-                    now = time.time()
-                    if (now+self.config.interval) > self.firstrunoftheday:
-                        # Sleep a short interval to sync up to the start time
-                        sleep = self.firstrunoftheday - now
-                        # stop checking from here on out
+                    if (now.timestamp()+self.config.interval) > self.firstrunoftheday:
+                        # Sleep a shorter interval to sync up to the start time
+                        sleep = self.firstrunoftheday - now.timestamp()
+                        # stop checking from here on out as we are sync'd
                         self.firstrunoftheday = 0
+                        logging.info("Syncing next interval to IntervalStart")
 
+                nextwakeup = (now + timedelta(seconds=sleep)).strftime("%b %d, %Y at %I:%M:%S %p")
+                logging.info("Next iteration at {}".format(nextwakeup))
                 time.sleep(sleep)
 
 

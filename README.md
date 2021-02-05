@@ -52,14 +52,15 @@ is not set, the interval will be based on the time the app is started (previous 
 |Username       |Comcast username (don't include the @comcast.com)                                                                   |
 |Password       |Password for above user
 #### LOG
-|Key            |Description                                                                                                         |
-|:--------------|:-------------------------------------------------------------------------------------------------------------------|
-|Enabled        |Set to True to activate
+|Key            |Description                                            |
+|:--------------|:------------------------------------------------------|
+|Enabled        |Set to True to activate                                |
+|Filename       |Set output logger name, default is "xfinity_usage.log" |
 #### FILE
-|Key            |Description                                                                                                         |
-|:--------------|:-------------------------------------------------------------------------------------------------------------------|
+|Key            |Description                                                  |
+|:--------------|:------------------------------------------------------------|
 |Enabled        |Set to True to activate
-|Filename       |JSON output is written to to '/data'. default = output.json                                                         |
+|Filename       |JSON output is written to to '/data'. default = output.json  |
 #### INFLUXDB
 | Key      | Description                                      |
 |:---------|:-------------------------------------------------|
@@ -119,8 +120,10 @@ Password = supersecretpassword
 4. Build the container
 ```
 cd <local folder>
-docker build -t xfinity .
+docker build --build-args TZ="America/New_York" -t xfinity .
 ```
+
+Note, the TZ should be set to whatever is appropriate for your environment.  Usually, a local TZ environment variable is set so this could simply be passed on as in TZ=${TZ} on the build line.
 
 ## Usage
 5. Run the container, pointing to the config file, and an output folder (optional,recommended)
