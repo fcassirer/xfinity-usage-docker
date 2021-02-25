@@ -63,6 +63,7 @@ class configManager():
         # General
         self.interval = self.config['GENERAL'].getint('Interval', fallback=14400)
         self.iterations = self.config['GENERAL'].getint('Iterations', fallback=1)
+        self.attempts = self.config['GENERAL'].getint('Attempts',fallback=1)
         self.verbose = self.config['GENERAL'].getboolean('Verbose', fallback=False)
         self.debug = self.config['GENERAL'].getboolean('Debug', fallback=False)
         intstart = self.config['GENERAL'].get('IntervalStart', fallback=None)
@@ -190,7 +191,7 @@ class XfinityUsageScrap():
 
     def run(self):
 
-        xfinity = XfinityUsage(username=self.config.comcast_user, password=self.config.comcast_password, debug=self.config.verbose, attempts=1)
+        xfinity = XfinityUsage(username=self.config.comcast_user, password=self.config.comcast_password, debug=self.config.verbose, attempts=self.config.attempts)
         #xfinity = XfinityUsage(username=self.config.comcast_user, password=self.config.comcast_password, debug=False)
         count = 0
         if (self.iterations == 0):
